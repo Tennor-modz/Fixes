@@ -35,9 +35,15 @@ export default () => {
                         Server creation dashboard
                     </NavLink>
                     {rootAdmin && (
-                        <NavLink to={'/admin/users?view=coin-requests'}>
+                        <a href={'/admin/coins'}>
                             <div className='icon'><FontAwesomeIcon icon={faCoins} /></div>
                             Coin requests
+                        </a>
+                    )}
+                    {!rootAdmin && (
+                        <NavLink to={'/?panel=coin-request'}>
+                            <div className='icon'><FontAwesomeIcon icon={faCoins} /></div>
+                            Request coins
                         </NavLink>
                     )}
                     <a href={'https://github.com/Tennor-modz/Fixes'} target={'_blank'} rel={'noreferrer'}>
