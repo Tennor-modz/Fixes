@@ -32,7 +32,6 @@ export default () => {
         () => getServers({ page, type: showOnlyAdmin && rootAdmin ? 'admin' : undefined })
     );
     const { data: account } = useSWR('/api/client/account', async () => (await http.get('/api/client/account')).data.data.attributes);
-    const { data: stats } = useSWR('/api/client/stats', async () => (await http.get('/api/client/stats')).data.data.attributes);
 
     useEffect(() => {
         setPage(1);
@@ -78,12 +77,6 @@ export default () => {
                     </div>
                 </div>
             )}
-            <div css={tw`mb-4 rounded-lg border border-pink-500/30 bg-gray-900 p-4`}>
-                <p css={tw`text-sm font-semibold text-pink-100`}>Nightshift stats</p>
-                <p css={tw`mt-1 text-xs text-neutral-400`}>
-                    {stats ? `Servers: ${stats.servers} · Users: ${stats.users} · Admin users: ${stats.admin_users}` : 'Loading live statistics...'}
-                </p>
-            </div>
             {rootAdmin && (
                 <div css={tw`mb-2 flex justify-end items-center`}>
                     <p css={tw`uppercase text-xs text-neutral-400 mr-2`}>
