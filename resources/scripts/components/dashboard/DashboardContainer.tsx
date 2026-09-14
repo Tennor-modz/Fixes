@@ -84,7 +84,7 @@ export default () => {
                     <p css={tw`text-lg font-semibold text-pink-100`}>Claim dashboard</p>
                     <p css={tw`mt-2 text-sm text-neutral-300`}>Claim your daily coin allowance to keep your server running.</p>
                     <div css={tw`mt-4 flex flex-wrap items-center gap-3`}>
-                        <span css={tw`rounded-full bg-pink-500/15 px-3 py-2 text-sm font-semibold text-pink-200`}>{account.daily_claim_amount} coins available daily</span>
+                        <span css={tw`rounded-full bg-pink-500/20 px-3 py-2 text-sm font-semibold text-pink-200`}>{account.daily_claim_amount} coins available daily</span>
                         <button type={'button'} disabled css={tw`cursor-not-allowed rounded-md bg-pink-600/50 px-4 py-2 text-sm font-semibold text-white/70`}>Claim coming soon</button>
                     </div>
                 </div>
@@ -94,7 +94,7 @@ export default () => {
                     <p css={tw`text-lg font-semibold text-orange-100`}>Server creation dashboard</p>
                     <p css={tw`mt-2 text-sm text-neutral-300`}>Create a server when your balance covers the current setup cost.</p>
                     <div css={tw`mt-4 flex flex-wrap gap-3 text-sm`}>
-                        <span css={tw`rounded-full bg-orange-500/15 px-3 py-2 text-orange-200`}>Setup cost: {account.server_creation_cost} coins</span>
+                        <span css={tw`rounded-full bg-orange-500/20 px-3 py-2 text-orange-200`}>Setup cost: {account.server_creation_cost} coins</span>
                         <span css={tw`rounded-full bg-gray-800 px-3 py-2 text-neutral-300`}>Available: {account.coins} coins</span>
                     </div>
                 </div>
