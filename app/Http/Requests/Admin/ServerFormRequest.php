@@ -9,6 +9,16 @@ use Illuminate\Validation\Validator;
 class ServerFormRequest extends AdminFormRequest
 {
     /**
+     * Allow the dedicated client creation route without opening any other
+     * administrator form to non-admin users.
+     */
+    public function authorize(): bool
+    {
+        return !is_null($this->user())
+            && ((bool) $this->user()->root_admin || $this->routeIs('client.servers.store'));
+    }
+
+    /**
      * Rules to be applied to this request.
      */
     public function rules(): array
