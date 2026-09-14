@@ -18,15 +18,26 @@
 
         @include('layouts.scripts')
         <style>
-            :root { --nightshift-pink: #ec4899; --nightshift-amber: #f59e0b; --nightshift-orange: #f97316; }
-            .main-header, .main-header .navbar { background: linear-gradient(110deg, #9d174d, var(--nightshift-pink) 52%, var(--nightshift-orange)); }
-            .main-header .logo { background: transparent; }
-            .skin-blue .main-sidebar, .skin-blue .left-side { background: #1f1020; }
-            .skin-blue .sidebar-menu > li:hover > a, .skin-blue .sidebar-menu > li.active > a { border-left-color: var(--nightshift-amber); background: #3b172d; }
-            .skin-blue .sidebar-menu > li.header { color: #fbbf24; }
+            :root { --nightshift-pink: #ec4899; --nightshift-pink-deep: #9d174d; --nightshift-amber: #f59e0b; --nightshift-orange: #f97316; --nightshift-charcoal: #111827; --nightshift-panel: #1f2937; --nightshift-text: #fce7f3; }
+            html, body { background: var(--nightshift-charcoal); color: var(--nightshift-text); }
+            .main-header, .main-header .navbar { background: linear-gradient(110deg, var(--nightshift-pink-deep), var(--nightshift-pink) 52%, var(--nightshift-orange)); }
+            .main-header .logo { background: transparent; color: white; font-weight: 800; letter-spacing: .08em; }
+            .main-header .navbar .sidebar-toggle:hover, .main-header .navbar .nav > li > a:hover { background: rgba(17, 24, 39, .28); }
+            .skin-blue .main-sidebar, .skin-blue .left-side { background: #17121f; }
+            .skin-blue .sidebar-menu > li:hover > a, .skin-blue .sidebar-menu > li.active > a { border-left-color: var(--nightshift-amber); background: #3b172d; color: white; }
+            .skin-blue .sidebar-menu > li.header { color: #fbbf24; background: #211326; }
+            .skin-blue .content-wrapper, .skin-blue .right-side { background: #111827; }
+            .content-header h1, .content-header h1 small, .breadcrumb > li { color: var(--nightshift-text); }
+            .content .box, .content .panel, .content .well, .content .table-responsive { background: var(--nightshift-panel); border-color: rgba(236,72,153,.45); color: var(--nightshift-text); }
+            .table-responsive { overflow-x: auto; }
+            .table > thead > tr > th { background: #374151; color: #fce7f3; border-color: rgba(245,158,11,.35); }
+            .table > tbody > tr > td { border-color: rgba(236,72,153,.18); }
+            .main-footer { background: #111827; border-top-color: rgba(236,72,153,.35); color: #d8b4e2; }
             .main-footer a { color: var(--nightshift-pink); }
             .btn-primary { background-color: var(--nightshift-pink); border-color: var(--nightshift-pink); }
             .btn-primary:hover, .btn-primary:focus { background-color: #be185d; border-color: var(--nightshift-amber); }
+            .form-control, .select2-container--default .select2-selection--single { background: #111827; border-color: rgba(236,72,153,.45); color: white; }
+            @media (max-width: 767px) { .main-header .logo { width: 55px; font-size: 0; } .main-header .logo:after { content: 'D'; font-size: 22px; } .content { padding: 10px; } .content-header { padding: 12px 10px 0; } }
         </style>
 
         @section('scripts')
@@ -53,7 +64,7 @@
                     <span>{{ config('app.name', 'Drex Hosting') }}</span>
                 </a>
                 <nav class="navbar navbar-static-top">
-                    <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                    <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button" aria-label="Open admin menu">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
@@ -175,7 +186,7 @@
                     <strong><i class="fa fa-fw {{ $appIsGit ? 'fa-git-square' : 'fa-code-fork' }}"></i></strong> {{ $appVersion }}<br />
                     <strong><i class="fa fa-fw fa-clock-o"></i></strong> {{ round(microtime(true) - LARAVEL_START, 3) }}s
                 </div>
-                Copyright &copy; 2026 <span>Nightshift</span> by Trashcore.
+                Copyright &copy; 2026 <span style="color:#ec4899;font-weight:700;">Drex Hosting</span> by Trashcore.
             </footer>
         </div>
         @section('footer-scripts')
