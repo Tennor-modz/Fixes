@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->unsignedInteger('coins')->default(30)->after('root_admin');
+            $table->unsignedInteger('coins')->default(0)->after('root_admin');
             $table->timestamp('coins_claimed_at')->nullable()->after('coins');
         });
 

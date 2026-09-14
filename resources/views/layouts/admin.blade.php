@@ -18,15 +18,15 @@
 
         @include('layouts.scripts')
         <style>
-            :root { --drex-blue: #2563eb; --drex-pink: #ec4899; }
-            .main-header, .main-header .navbar { background: linear-gradient(110deg, var(--drex-blue), #17358f 58%, var(--drex-pink)); }
+            :root { --nightshift-pink: #ec4899; --nightshift-amber: #f59e0b; --nightshift-orange: #f97316; }
+            .main-header, .main-header .navbar { background: linear-gradient(110deg, #9d174d, var(--nightshift-pink) 52%, var(--nightshift-orange)); }
             .main-header .logo { background: transparent; }
-            .skin-blue .main-sidebar, .skin-blue .left-side { background: #081126; }
-            .skin-blue .sidebar-menu > li:hover > a, .skin-blue .sidebar-menu > li.active > a { border-left-color: var(--drex-pink); background: #111d3c; }
-            .skin-blue .sidebar-menu > li.header { color: #93c5fd; }
-            .main-footer a { color: var(--drex-pink); }
-            .btn-primary { background-color: var(--drex-blue); border-color: var(--drex-blue); }
-            .btn-primary:hover, .btn-primary:focus { background-color: #1d4ed8; border-color: var(--drex-pink); }
+            .skin-blue .main-sidebar, .skin-blue .left-side { background: #1f1020; }
+            .skin-blue .sidebar-menu > li:hover > a, .skin-blue .sidebar-menu > li.active > a { border-left-color: var(--nightshift-amber); background: #3b172d; }
+            .skin-blue .sidebar-menu > li.header { color: #fbbf24; }
+            .main-footer a { color: var(--nightshift-pink); }
+            .btn-primary { background-color: var(--nightshift-pink); border-color: var(--nightshift-pink); }
+            .btn-primary:hover, .btn-primary:focus { background-color: #be185d; border-color: var(--nightshift-amber); }
         </style>
 
         @section('scripts')
@@ -175,7 +175,7 @@
                     <strong><i class="fa fa-fw {{ $appIsGit ? 'fa-git-square' : 'fa-code-fork' }}"></i></strong> {{ $appVersion }}<br />
                     <strong><i class="fa fa-fw fa-clock-o"></i></strong> {{ round(microtime(true) - LARAVEL_START, 3) }}s
                 </div>
-                Copyright &copy; 2026 <span>Drex Hosting</span> — Made by Trashcore.
+                Copyright &copy; 2026 <span>Nightshift</span> by Trashcore.
             </footer>
         </div>
         @section('footer-scripts')

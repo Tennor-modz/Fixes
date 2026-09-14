@@ -61,8 +61,8 @@ class ServerCreationService
                 throw new DisplayException('Each Drex Hosting user may create only one server.');
             }
 
-            if ($owner->coins < 10) {
-                throw new DisplayException('You need at least 10 coins to create a server.');
+            if ($owner->coins < 30) {
+                throw new DisplayException('You need at least 30 coins to create a server.');
             }
         }
 
@@ -99,7 +99,7 @@ class ServerCreationService
         // deleting the server itself from the system.
         /** @var Server $server */
         $server = $this->connection->transaction(function () use ($data, $eggVariableData, $ownerId, $isClient) {
-            if ($isClient && User::query()->whereKey($ownerId)->where('coins', '>=', 10)->decrement('coins', 10) !== 1) {
+            if ($isClient && User::query()->whereKey($ownerId)->where('coins', '>=', 30)->decrement('coins', 30) !== 1) {
                 throw new DisplayException('Your coin balance changed. Please try again.');
             }
 

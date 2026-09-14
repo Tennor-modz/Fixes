@@ -57,19 +57,33 @@ export default () => {
     return (
         <PageContentBlock title={'Dashboard'} showFlashKey={'dashboard'}>
             {account && (
-                <div css={tw`mb-4 rounded-lg border border-blue-500/30 bg-gradient-to-r from-blue-900/40 via-slate-900 to-pink-900/30 p-4`}>
+                <div css={tw`mb-4 rounded-lg border border-pink-500/40 bg-gradient-to-r from-pink-950/70 via-slate-950 to-amber-950/60 p-4 shadow-lg shadow-pink-950/20`}>
                     <div css={tw`flex items-center justify-between gap-4`}>
                         <div>
-                            <p css={tw`text-xs font-semibold uppercase tracking-wider text-blue-300`}>Drex Hosting balance</p>
+                            <p css={tw`text-xs font-semibold uppercase tracking-wider text-pink-200`}>Nightshift balance</p>
                             <p css={tw`mt-1 text-2xl font-bold text-white`}>{account.coins} coins</p>
-                            <p css={tw`mt-1 text-xs text-neutral-400`}>Server creation costs {account.server_creation_cost} coins. Daily claims and coin requests are coming soon.</p>
+                            <p css={tw`mt-1 text-xs text-neutral-400`}>Create one server for {account.server_creation_cost} coins. Daily upkeep is {account.daily_server_cost} coins; claim {account.daily_claim_amount} coins each day or request coins from an admin.</p>
                         </div>
-                        <div css={tw`rounded-full border border-pink-400/40 bg-pink-500/10 px-3 py-1 text-xs font-semibold text-pink-200`}>
+                        <div css={tw`rounded-full border border-amber-400/40 bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-200`}>
                             {account.server_count}/1 servers
                         </div>
                     </div>
                 </div>
             )}
+            <div css={tw`mb-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4`}>
+                <a href="https://github.com" target="_blank" rel="noreferrer" css={tw`rounded-lg border border-pink-500/30 bg-pink-950/30 p-4 transition hover:border-pink-300`}>
+                    <p css={tw`text-sm font-semibold text-pink-100`}>Get help on GitHub</p><p css={tw`mt-1 text-xs text-neutral-400`}>Report issues and read guides.</p>
+                </a>
+                <a href="https://wa.me/254703726139" target="_blank" rel="noreferrer" css={tw`rounded-lg border border-amber-500/30 bg-amber-950/30 p-4 transition hover:border-amber-300`}>
+                    <p css={tw`text-sm font-semibold text-amber-100`}>Chat with owner</p><p css={tw`mt-1 text-xs text-neutral-400`}>WhatsApp the panel owner.</p>
+                </a>
+                <a href="https://wa.me/254703726139?text=I%20would%20like%20to%20buy%20you%20a%20coffee" target="_blank" rel="noreferrer" css={tw`rounded-lg border border-orange-500/30 bg-orange-950/30 p-4 transition hover:border-orange-300`}>
+                    <p css={tw`text-sm font-semibold text-orange-100`}>Buy coffee</p><p css={tw`mt-1 text-xs text-neutral-400`}>Support Nightshift on WhatsApp.</p>
+                </a>
+                <div css={tw`rounded-lg border border-pink-500/30 bg-slate-950/60 p-4`}>
+                    <p css={tw`text-sm font-semibold text-pink-100`}>Nightshift stats</p><p css={tw`mt-1 text-xs text-neutral-400`}>Servers: {account?.server_count ?? 0} · Users: — · Admin users: —</p>
+                </div>
+            </div>
             {rootAdmin && (
                 <div css={tw`mb-2 flex justify-end items-center`}>
                     <p css={tw`uppercase text-xs text-neutral-400 mr-2`}>

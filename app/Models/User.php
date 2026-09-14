@@ -159,7 +159,7 @@ class User extends Model implements
     protected $attributes = [
         'external_id' => null,
         'root_admin' => false,
-        'coins' => 30,
+        'coins' => 0,
         'language' => 'en',
         'use_totp' => false,
         'totp_secret' => null,

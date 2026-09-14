@@ -29,7 +29,9 @@ class AccountTransformer extends BaseClientTransformer
             'language' => $model->language,
             'coins' => $model->coins,
             'server_count' => $model->servers()->count(),
-            'server_creation_cost' => 10,
+            'server_creation_cost' => 30,
+            'daily_server_cost' => 15,
+            'daily_claim_amount' => 10,
         ];
     }
 }
