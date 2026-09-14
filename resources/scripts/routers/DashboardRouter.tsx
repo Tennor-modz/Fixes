@@ -49,7 +49,7 @@ export default () => {
                         Chat with owner
                     </a>
                     <a href={'https://wa.me/254703726139?text=I%20would%20like%20to%20buy%20you%20a%20coffee'} target={'_blank'} rel={'noreferrer'}>
-                        <div className='icon'><FontAwesomeIcon icon={faCoffee} /></div>
+                        <div className='icon'><FontAwesomeIcon icon={faMugHot} /></div>
                         Buy coffee
                     </a>
                     {routes.account.map(({ path, name, exact = false, iconProp }) => name ? (
