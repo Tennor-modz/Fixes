@@ -15,6 +15,14 @@ import Pagination from '@/components/elements/Pagination';
 import { useLocation } from 'react-router-dom';
 import http from '@/api/http';
 
+interface Account {
+    coins: number;
+    server_count: number;
+    server_creation_cost: number;
+    daily_server_cost: number;
+    daily_claim_amount: number;
+}
+
 export default () => {
     const { search } = useLocation();
     const query = new URLSearchParams(search);
@@ -31,7 +39,10 @@ export default () => {
         ['/api/client/servers', showOnlyAdmin && rootAdmin, page],
         () => getServers({ page, type: showOnlyAdmin && rootAdmin ? 'admin' : undefined })
     );
-    const { data: account } = useSWR('/api/client/account', async () => (await http.get('/api/client/account')).data.data.attributes);
+    const { data: account, error: accountError } = useSWR<Account>(
+        '/api/client/account',
+        async () => (await http.get('/api/client/account')).data.data.attributes
+    );
 
     useEffect(() => {
         setPage(1);
@@ -54,49 +65,105 @@ export default () => {
     }, [page]);
 
     useEffect(() => {
-        if (error) clearAndAddHttpError({ key: 'dashboard', error });
-        if (!error) clearFlashes('dashboard');
-    }, [error]);
+        const requestError = error || accountError;
+
+        if (requestError) clearAndAddHttpError({ key: 'dashboard', error: requestError });
+        if (!requestError) clearFlashes('dashboard');
+    }, [error, accountError]);
 
     return (
         <PageContentBlock title={'Dashboard'} showFlashKey={'dashboard'}>
-            {account && (
-                <div id={'coin-balance'} css={tw`mb-4 rounded-lg border border-pink-500/40 bg-gradient-to-r from-pink-900 via-gray-900 to-orange-900 p-4 shadow-lg`}>
-                    {activePanel && (
-                        <p css={tw`mb-3 text-xs font-semibold uppercase tracking-widest text-orange-300`}>
-                            {activePanel === 'claim' ? 'Claim dashboard' : activePanel === 'create-server' ? 'Server creation dashboard' : 'Coin balance'}
-                        </p>
-                    )}
+            <div
+                id={'coin-balance'}
+                css={tw`mb-4 rounded-lg border border-pink-500/40 bg-gradient-to-r from-pink-900 via-gray-900 to-orange-900 p-4 shadow-lg`}
+            >
+                {activePanel && (
+                    <p css={tw`mb-3 text-xs font-semibold uppercase tracking-widest text-orange-300`}>
+                        {activePanel === 'claim'
+                            ? 'Claim dashboard'
+                            : activePanel === 'create-server'
+                            ? 'Server creation dashboard'
+                            : 'Coin balance'}
+                    </p>
+                )}
+                {account ? (
                     <div css={tw`flex items-center justify-between gap-4`}>
                         <div>
-                            <p css={tw`text-xs font-semibold uppercase tracking-wider text-pink-200`}>Nightshift balance</p>
+                            <p css={tw`text-xs font-semibold uppercase tracking-wider text-pink-200`}>
+                                Nightshift balance
+                            </p>
                             <p css={tw`mt-1 text-2xl font-bold text-white`}>{account.coins} coins</p>
-                            <p css={tw`mt-1 text-xs text-neutral-400`}>Create one server for {account.server_creation_cost} coins. Daily upkeep is {account.daily_server_cost} coins; claim {account.daily_claim_amount} coins each day or request coins from an admin.</p>
+                            <p css={tw`mt-1 text-xs text-neutral-400`}>
+                                Create one server for {account.server_creation_cost} coins. Daily upkeep is{' '}
+                                {account.daily_server_cost} coins; claim {account.daily_claim_amount} coins each day or
+                                request coins from an admin.
+                            </p>
                         </div>
-                        <div css={tw`rounded-full border border-orange-400/40 bg-orange-500/10 px-3 py-1 text-xs font-semibold text-orange-200`}>
+                        <div
+                            css={tw`rounded-full border border-orange-400/40 bg-orange-500/10 px-3 py-1 text-xs font-semibold text-orange-200`}
+                        >
                             {account.server_count}/1 servers
                         </div>
                     </div>
-                </div>
-            )}
-            {activePanel === 'claim' && account && (
+                ) : accountError ? (
+                    <p css={tw`text-sm text-neutral-300`}>
+                        Your coin balance is temporarily unavailable. Please refresh and try again.
+                    </p>
+                ) : (
+                    <Spinner centered size={'small'} />
+                )}
+            </div>
+            {activePanel && (
                 <div css={tw`mb-4 rounded-lg border border-pink-500/40 bg-gray-900 p-5 shadow-lg`}>
-                    <p css={tw`text-lg font-semibold text-pink-100`}>Claim dashboard</p>
-                    <p css={tw`mt-2 text-sm text-neutral-300`}>Claim your daily coin allowance to keep your server running.</p>
-                    <div css={tw`mt-4 flex flex-wrap items-center gap-3`}>
-                        <span css={tw`rounded-full bg-pink-500/20 px-3 py-2 text-sm font-semibold text-pink-200`}>{account.daily_claim_amount} coins available daily</span>
-                        <button type={'button'} disabled css={tw`cursor-not-allowed rounded-md bg-pink-600/50 px-4 py-2 text-sm font-semibold text-white/70`}>Claim coming soon</button>
-                    </div>
-                </div>
-            )}
-            {activePanel === 'create-server' && account && (
-                <div css={tw`mb-4 rounded-lg border border-orange-500/40 bg-gray-900 p-5 shadow-lg`}>
-                    <p css={tw`text-lg font-semibold text-orange-100`}>Server creation dashboard</p>
-                    <p css={tw`mt-2 text-sm text-neutral-300`}>Create a server when your balance covers the current setup cost.</p>
-                    <div css={tw`mt-4 flex flex-wrap gap-3 text-sm`}>
-                        <span css={tw`rounded-full bg-orange-500/20 px-3 py-2 text-orange-200`}>Setup cost: {account.server_creation_cost} coins</span>
-                        <span css={tw`rounded-full bg-gray-800 px-3 py-2 text-neutral-300`}>Available: {account.coins} coins</span>
-                    </div>
+                    <p css={tw`text-lg font-semibold text-pink-100`}>
+                        {activePanel === 'claim'
+                            ? 'Claim dashboard'
+                            : activePanel === 'create-server'
+                            ? 'Server creation dashboard'
+                            : 'Coin balance'}
+                    </p>
+                    {!account && !accountError && <Spinner centered size={'small'} />}
+                    {accountError && (
+                        <p css={tw`mt-2 text-sm text-neutral-300`}>
+                            We could not load the dashboard details. Please refresh and try again.
+                        </p>
+                    )}
+                    {account && activePanel === 'claim' && (
+                        <>
+                            <p css={tw`mt-2 text-sm text-neutral-300`}>
+                                Claim your daily coin allowance to keep your server running.
+                            </p>
+                            <div css={tw`mt-4 flex flex-wrap items-center gap-3`}>
+                                <span
+                                    css={tw`rounded-full bg-pink-500/20 px-3 py-2 text-sm font-semibold text-pink-200`}
+                                >
+                                    {account.daily_claim_amount} coins available daily
+                                </span>
+                                <button
+                                    type={'button'}
+                                    disabled
+                                    css={tw`cursor-not-allowed rounded-md bg-pink-600/50 px-4 py-2 text-sm font-semibold text-white/70`}
+                                >
+                                    Claim coming soon
+                                </button>
+                            </div>
+                        </>
+                    )}
+                    {account && activePanel === 'create-server' && (
+                        <>
+                            <p css={tw`mt-2 text-sm text-neutral-300`}>
+                                Create a server when your balance covers the current setup cost.
+                            </p>
+                            <div css={tw`mt-4 flex flex-wrap gap-3 text-sm`}>
+                                <span css={tw`rounded-full bg-orange-500/20 px-3 py-2 text-orange-200`}>
+                                    Setup cost: {account.server_creation_cost} coins
+                                </span>
+                                <span css={tw`rounded-full bg-gray-800 px-3 py-2 text-neutral-300`}>
+                                    Available: {account.coins} coins
+                                </span>
+                            </div>
+                        </>
+                    )}
                 </div>
             )}
             {!activePanel && (
@@ -120,7 +187,11 @@ export default () => {
                             {({ items }) =>
                                 items.length > 0 ? (
                                     items.map((server, index) => (
-                                        <ServerRow key={server.uuid} server={server} css={index > 0 ? tw`mt-2` : undefined} />
+                                        <ServerRow
+                                            key={server.uuid}
+                                            server={server}
+                                            css={index > 0 ? tw`mt-2` : undefined}
+                                        />
                                     ))
                                 ) : (
                                     <p css={tw`text-center text-sm text-neutral-400`}>
