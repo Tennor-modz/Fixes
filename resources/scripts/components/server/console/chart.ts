@@ -11,72 +11,83 @@ import {
 import { DeepPartial } from 'ts-essentials';
 import { useState } from 'react';
 import { deepmerge, deepmergeCustom } from 'deepmerge-ts';
-import { theme } from 'twin.macro';
 import { hexToRgba } from '@/lib/helpers';
+import { useTheme } from '@/theme';
+import type { ColorScale } from '@/theme';
 
 ChartJS.register(LineElement, PointElement, Filler, LinearScale);
 
-const options: ChartOptions<'line'> = {
-    responsive: true,
-    animation: false,
-    plugins: {
-        legend: { display: false },
-        title: { display: false },
-        tooltip: { enabled: false },
-    },
-    layout: {
-        padding: 0,
-    },
-    scales: {
-        x: {
-            min: 0,
-            max: 19,
-            type: 'linear',
-            grid: {
-                display: false,
-                drawBorder: false,
-            },
-            ticks: {
-                display: false,
-            },
+type ChartDatasetCallback = (value: ChartDataset<'line'>, index: number) => ChartDataset<'line'>;
+
+function getDefaultOptions(theme: { colors: { gray: ColorScale }; fonts: { sans: string } }): ChartOptions<'line'> {
+    return {
+        responsive: true,
+        animation: false,
+        plugins: {
+            legend: { display: false },
+            title: { display: false },
+            tooltip: { enabled: false },
         },
-        y: {
-            min: 0,
-            type: 'linear',
-            grid: {
-                display: true,
-                color: theme('colors.gray.700'),
-                drawBorder: false,
+        layout: {
+            padding: 0,
+        },
+        scales: {
+            x: {
+                min: 0,
+                max: 19,
+                type: 'linear',
+                grid: {
+                    display: false,
+                    drawBorder: false,
+                },
+                ticks: {
+                    display: false,
+                },
             },
-            ticks: {
-                display: true,
-                count: 3,
-                color: theme('colors.gray.200'),
-                font: {
-                    family: theme('fontFamily.sans'),
-                    size: 11,
-                    weight: '400',
+            y: {
+                min: 0,
+                type: 'linear',
+                grid: {
+                    display: true,
+                    color: theme.colors.gray[700],
+                    drawBorder: false,
+                },
+                ticks: {
+                    display: true,
+                    count: 3,
+                    color: theme.colors.gray[200],
+                    font: {
+                        family: theme.fonts.sans,
+                        size: 11,
+                        weight: '400',
+                    },
                 },
             },
         },
-    },
-    elements: {
-        point: {
-            radius: 0,
+        elements: {
+            point: {
+                radius: 0,
+            },
+            line: {
+                tension: 0.15,
+            },
         },
-        line: {
-            tension: 0.15,
-        },
-    },
-};
-
-function getOptions(opts?: DeepPartial<ChartOptions<'line'>> | undefined): ChartOptions<'line'> {
-    return deepmerge(options, opts || {});
+    };
 }
 
-type ChartDatasetCallback = (value: ChartDataset<'line'>, index: number) => ChartDataset<'line'>;
+function getOptions(
+    theme: { colors: { gray: ColorScale }; fonts: { sans: string } },
+    opts?: DeepPartial<ChartOptions<'line'>>
+): ChartOptions<'line'> {
+    return deepmerge(getDefaultOptions(theme), opts || {});
+}
 
-function getEmptyData(label: string, sets = 1, callback?: ChartDatasetCallback | undefined): ChartData<'line'> {
+function getEmptyData(
+    theme: { colors: { cyan: ColorScale } },
+    label: string,
+    sets = 1,
+    callback?: ChartDatasetCallback | undefined
+): ChartData<'line'> {
     const next = callback || ((value) => value);
 
     return {
@@ -91,8 +102,8 @@ function getEmptyData(label: string, sets = 1, callback?: ChartDatasetCallback |
                         fill: true,
                         label,
                         data: Array(20).fill(-5),
-                        borderColor: theme('colors.cyan.400'),
-                        backgroundColor: hexToRgba(theme('colors.cyan.700'), 0.5),
+                        borderColor: theme.colors.cyan[400],
+                        backgroundColor: hexToRgba(theme.colors.cyan[700], 0.5),
                     },
                     index
                 )
@@ -109,10 +120,12 @@ interface UseChartOptions {
 }
 
 function useChart(label: string, opts?: UseChartOptions) {
+    const { theme } = useTheme();
     const options = getOptions(
+        theme,
         typeof opts?.options === 'number' ? { scales: { y: { min: 0, suggestedMax: opts.options } } } : opts?.options
     );
-    const [data, setData] = useState(getEmptyData(label, opts?.sets || 1, opts?.callback));
+    const [data, setData] = useState(getEmptyData(theme, label, opts?.sets || 1, opts?.callback));
 
     const push = (items: number | null | (number | null)[]) =>
         setData((state) =>
