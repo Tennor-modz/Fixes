@@ -41,7 +41,7 @@ export default () => {
     );
     const { data: account, error: accountError } = useSWR<Account>(
         '/api/client/account',
-        async () => (await http.get('/api/client/account')).data.data.attributes
+        async () => (await http.get('/api/client/account')).data.attributes
     );
 
     useEffect(() => {
