@@ -23,6 +23,8 @@ Route::get('/permissions', [Client\ClientController::class, 'permissions']);
 Route::prefix('/account')->middleware(AccountSubject::class)->group(function () {
     Route::prefix('/')->withoutMiddleware(RequireTwoFactorAuthentication::class)->group(function () {
         Route::get('/', [Client\AccountController::class, 'index'])->name('api:client.account');
+        Route::post('/claim-coins', [Client\AccountController::class, 'claimCoins'])->name('api:client.account.claim-coins');
+        Route::post('/coin-requests', [Client\AccountController::class, 'requestCoins'])->name('api:client.account.coin-requests');
         Route::get('/two-factor', [Client\TwoFactorController::class, 'index']);
         Route::post('/two-factor', [Client\TwoFactorController::class, 'store']);
         Route::post('/two-factor/disable', [Client\TwoFactorController::class, 'delete']);
