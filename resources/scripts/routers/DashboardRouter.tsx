@@ -10,6 +10,7 @@ import routes from '@/routers/routes';
 import Sidebar from '@/components/Sidebar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { faGift, faLayerGroup, faServer } from '@fortawesome/free-solid-svg-icons';
 
 export default () => {
     const location = useLocation();
@@ -17,18 +18,36 @@ export default () => {
     return (
         <>
             <NavigationBar />
-            {location.pathname.startsWith('/account') && (
+            {(location.pathname === '/' || location.pathname.startsWith('/account')) && (
                 <Sidebar>
-                    {routes.account
-                        .filter((route) => !!route.name)
-                        .map(({ path, name, exact = false, iconProp }) => (
-                            <NavLink key={path} to={`/account/${path}`.replace('//', '/')} exact={exact}>
-                                <div className='icon'>
-                                    <FontAwesomeIcon icon={iconProp as IconProp} />
-                                </div>
-                                {name}
+                    {location.pathname === '/' && (
+                        <>
+                            <NavLink to={'/'} exact>
+                                <div className='icon'><FontAwesomeIcon icon={faLayerGroup} /></div>
+                                Coin balance
                             </NavLink>
-                        ))}
+                            <NavLink to={'/?panel=claim'}>
+                                <div className='icon'><FontAwesomeIcon icon={faGift} /></div>
+                                Claim dashboard
+                            </NavLink>
+                            <NavLink to={'/?panel=create-server'}>
+                                <div className='icon'><FontAwesomeIcon icon={faServer} /></div>
+                                Server creation dashboard
+                            </NavLink>
+                        </>
+                    )}
+                    {location.pathname.startsWith('/account') && (
+                        routes.account
+                            .filter((route) => !!route.name)
+                            .map(({ path, name, exact = false, iconProp }) => (
+                                <NavLink key={path} to={`/account/${path}`.replace('//', '/')} exact={exact}>
+                                    <div className='icon'>
+                                        <FontAwesomeIcon icon={iconProp as IconProp} />
+                                    </div>
+                                    {name}
+                                </NavLink>
+                            ))
+                    )}
                 </Sidebar>
             )}
 

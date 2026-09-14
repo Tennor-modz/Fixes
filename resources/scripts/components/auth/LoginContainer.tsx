@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import { Link, RouteComponentProps, useLocation } from 'react-router-dom';
 import login from '@/api/auth/login';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import { useStoreState } from 'easy-peasy';
@@ -17,6 +17,7 @@ interface Values {
 }
 
 const LoginContainer = ({ history }: RouteComponentProps) => {
+    const location = useLocation<{ registrationComplete?: boolean }>();
     const ref = useRef<Reaptcha>(null);
     const [token, setToken] = useState('');
 
@@ -75,6 +76,11 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
         >
             {({ isSubmitting, setSubmitting, submitForm }) => (
                 <LoginFormContainer title={'Login to Continue'} css={tw`w-full flex`}>
+                    {location.state?.registrationComplete && (
+                        <div css={tw`mb-5 rounded-md border border-orange-400/60 bg-orange-500/10 px-4 py-3 text-sm text-orange-100`}>
+                            Account created successfully. Log in to open your Drex Hosting dashboard.
+                        </div>
+                    )}
                     <Field light type={'text'} label={'Username or Email'} name={'username'} disabled={isSubmitting} />
                     <div css={tw`mt-6`}>
                         <Field light type={'password'} label={'Password'} name={'password'} disabled={isSubmitting} />

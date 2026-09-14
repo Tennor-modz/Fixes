@@ -17,7 +17,9 @@ import http from '@/api/http';
 
 export default () => {
     const { search } = useLocation();
-    const defaultPage = Number(new URLSearchParams(search).get('page') || '1');
+    const query = new URLSearchParams(search);
+    const defaultPage = Number(query.get('page') || '1');
+    const activePanel = query.get('panel');
 
     const [page, setPage] = useState(!isNaN(defaultPage) && defaultPage > 0 ? defaultPage : 1);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
@@ -57,7 +59,12 @@ export default () => {
     return (
         <PageContentBlock title={'Dashboard'} showFlashKey={'dashboard'}>
             {account && (
-                <div css={tw`mb-4 rounded-lg border border-pink-500/40 bg-gradient-to-r from-pink-900 via-gray-900 to-orange-900 p-4 shadow-lg`}>
+                <div id={'coin-balance'} css={tw`mb-4 rounded-lg border border-pink-500/40 bg-gradient-to-r from-pink-900 via-gray-900 to-orange-900 p-4 shadow-lg`}>
+                    {activePanel && (
+                        <p css={tw`mb-3 text-xs font-semibold uppercase tracking-widest text-orange-300`}>
+                            {activePanel === 'claim' ? 'Claim dashboard' : activePanel === 'create-server' ? 'Server creation dashboard' : 'Coin balance'}
+                        </p>
+                    )}
                     <div css={tw`flex items-center justify-between gap-4`}>
                         <div>
                             <p css={tw`text-xs font-semibold uppercase tracking-wider text-pink-200`}>Nightshift balance</p>

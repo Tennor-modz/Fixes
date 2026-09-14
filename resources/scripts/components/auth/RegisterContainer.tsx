@@ -32,7 +32,7 @@ export default ({ history }: RouteComponentProps) => {
                     type: 'success',
                     message: 'Account created. Sign in to access your Drex Hosting dashboard.',
                 });
-                history.push('/auth/login');
+                history.push('/auth/login', { registrationComplete: true });
             })
             .catch((error) => {
                 setSubmitting(false);
