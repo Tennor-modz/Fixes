@@ -37,6 +37,8 @@
             .btn-primary { background-color: var(--nightshift-pink); border-color: var(--nightshift-pink); }
             .btn-primary:hover, .btn-primary:focus { background-color: #be185d; border-color: var(--nightshift-amber); }
             .form-control, .select2-container--default .select2-selection--single { background: #111827; border-color: rgba(236,72,153,.45); color: white; }
+            .client-create .content-wrapper { margin-left: 0; }
+            .client-create .sidebar-toggle { display: none; }
             @media (max-width: 767px) { .main-header .logo { width: 55px; font-size: 0; } .main-header .logo:after { content: 'D'; font-size: 22px; } .content { padding: 10px; } .content-header { padding: 12px 10px 0; } }
         </style>
 
@@ -57,7 +59,7 @@
             <![endif]-->
         @show
     </head>
-    <body class="hold-transition skin-blue fixed sidebar-mini">
+    <body class="hold-transition skin-blue fixed sidebar-mini {{ ($client ?? false) ? 'client-create' : '' }}">
         <div class="wrapper">
             <header class="main-header">
                 <a href="{{ route('index') }}" class="logo">
@@ -88,6 +90,7 @@
                     </div>
                 </nav>
             </header>
+            @if(!($client ?? false))
             <aside class="main-sidebar">
                 <section class="sidebar">
                     <ul class="sidebar-menu">
@@ -152,6 +155,7 @@
                     </ul>
                 </section>
             </aside>
+            @endif
             <div class="content-wrapper">
                 <section class="content-header">
                     @yield('content-header')
