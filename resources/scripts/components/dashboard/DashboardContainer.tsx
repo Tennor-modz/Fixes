@@ -45,10 +45,12 @@ export default () => {
     }, [servers?.pagination.currentPage]);
 
     useEffect(() => {
-        // Don't use react-router to handle changing this part of the URL, otherwise it
-        // triggers a needless re-render. We just want to track this in the URL incase the
-        // user refreshes the page.
-        window.history.replaceState(null, document.title, `/${page <= 1 ? '' : `?page=${page}`}`);
+        // Keep the selected dashboard panel in the URL while pagination changes.
+        const params = new URLSearchParams(window.location.search);
+        if (page <= 1) params.delete('page');
+        else params.set('page', String(page));
+        const queryString = params.toString();
+        window.history.replaceState(null, document.title, `/${queryString ? `?${queryString}` : ''}`);
     }, [page]);
 
     useEffect(() => {
@@ -74,6 +76,26 @@ export default () => {
                         <div css={tw`rounded-full border border-orange-400/40 bg-orange-500/10 px-3 py-1 text-xs font-semibold text-orange-200`}>
                             {account.server_count}/1 servers
                         </div>
+                    </div>
+                </div>
+            )}
+            {activePanel === 'claim' && account && (
+                <div css={tw`mb-4 rounded-lg border border-pink-500/40 bg-gray-900 p-5 shadow-lg`}>
+                    <p css={tw`text-lg font-semibold text-pink-100`}>Claim dashboard</p>
+                    <p css={tw`mt-2 text-sm text-neutral-300`}>Claim your daily coin allowance to keep your server running.</p>
+                    <div css={tw`mt-4 flex flex-wrap items-center gap-3`}>
+                        <span css={tw`rounded-full bg-pink-500/15 px-3 py-2 text-sm font-semibold text-pink-200`}>{account.daily_claim_amount} coins available daily</span>
+                        <button type={'button'} disabled css={tw`cursor-not-allowed rounded-md bg-pink-600/50 px-4 py-2 text-sm font-semibold text-white/70`}>Claim coming soon</button>
+                    </div>
+                </div>
+            )}
+            {activePanel === 'create-server' && account && (
+                <div css={tw`mb-4 rounded-lg border border-orange-500/40 bg-gray-900 p-5 shadow-lg`}>
+                    <p css={tw`text-lg font-semibold text-orange-100`}>Server creation dashboard</p>
+                    <p css={tw`mt-2 text-sm text-neutral-300`}>Create a server when your balance covers the current setup cost.</p>
+                    <div css={tw`mt-4 flex flex-wrap gap-3 text-sm`}>
+                        <span css={tw`rounded-full bg-orange-500/15 px-3 py-2 text-orange-200`}>Setup cost: {account.server_creation_cost} coins</span>
+                        <span css={tw`rounded-full bg-gray-800 px-3 py-2 text-neutral-300`}>Available: {account.coins} coins</span>
                     </div>
                 </div>
             )}

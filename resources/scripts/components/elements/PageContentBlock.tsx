@@ -32,9 +32,9 @@ const PageContentBlock: React.FC<PageContentBlockProps> = ({ title, showFlashKey
                             target={'_blank'}
                             css={tw`no-underline text-neutral-500 hover:text-neutral-300`}
                         >
-                            Nightshift&reg;
+                            DrexHost
                         </a>
-                        &nbsp;&copy; 2022 - {new Date().getFullYear()}
+                        &nbsp;&copy; 2025 - {new Date().getFullYear()}
                     </p>
                 </ContentContainer>
             </>
