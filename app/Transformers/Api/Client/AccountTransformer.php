@@ -32,6 +32,10 @@ class AccountTransformer extends BaseClientTransformer
             'server_creation_cost' => 30,
             'daily_server_cost' => 15,
             'daily_claim_amount' => 10,
+            'can_claim_coins' => !$model->coins_claimed_at?->isToday(),
+            'pending_coin_request' => $model->coinRequests()
+                ->where('status', \Pterodactyl\Models\CoinRequest::STATUS_PENDING)
+                ->exists(),
         ];
     }
 }
