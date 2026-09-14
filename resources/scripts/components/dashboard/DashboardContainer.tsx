@@ -274,7 +274,7 @@ export default () => {
                                     <button
                                         type={'submit'}
                                         disabled={requestingCoins}
-                                        css={tw`w-auto rounded-md bg-pink-600 px-4 py-2 text-sm font-semibold text-white hover:bg-pink-500 disabled:cursor-not-allowed disabled:opacity-50`}
+                                        css={tw`w-max rounded-md bg-pink-600 px-4 py-2 text-sm font-semibold text-white hover:bg-pink-500 disabled:cursor-not-allowed disabled:opacity-50`}
                                     >
                                         {requestingCoins ? 'Sending...' : 'Send coin request'}
                                     </button>
