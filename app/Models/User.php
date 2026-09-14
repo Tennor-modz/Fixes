@@ -248,6 +248,16 @@ class User extends Model implements
     }
 
     /**
+     * Coin requests submitted by this user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\CoinRequest, $this>
+     */
+    public function coinRequests(): HasMany
+    {
+        return $this->hasMany(CoinRequest::class);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\ApiKey, $this>
      */
     public function apiKeys(): HasMany
