@@ -106,6 +106,12 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                         >
                             Forgot password?
                         </Link>
+                        <Link
+                            to={'/auth/register'}
+                            css={tw`block mt-4 text-xs text-pink-600 tracking-wide no-underline uppercase hover:text-pink-700`}
+                        >
+                            Create a Drex Hosting account
+                        </Link>
                     </div>
                 </LoginFormContainer>
             )}

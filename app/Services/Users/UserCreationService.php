@@ -45,6 +45,7 @@ class UserCreationService
         /** @var User $user */
         $user = $this->repository->create(array_merge($data, [
             'uuid' => Uuid::uuid4()->toString(),
+            'coins' => $data['coins'] ?? 30,
         ]), true, true);
 
         if (isset($generateResetToken)) {
