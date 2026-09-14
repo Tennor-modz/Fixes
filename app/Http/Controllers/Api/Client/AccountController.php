@@ -6,7 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Pterodactyl\Facades\Activity;
+use Pterodactyl\Models\CoinRequest;
+use Pterodactyl\Models\User;
+use Pterodactyl\Exceptions\DisplayException;
 use Illuminate\Support\Facades\RateLimiter;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Transformers\Api\Client\AccountTransformer;
@@ -34,6 +38,64 @@ class AccountController extends ClientApiController
         return $this->fractal->item($request->user())
             ->transformWith($this->getTransformer(AccountTransformer::class))
             ->toArray();
+    }
+
+    /**
+     * Add the daily coin allowance to the authenticated user's balance.
+     */
+    public function claimCoins(Request $request): array
+    {
+        $user = DB::transaction(function () use ($request) {
+            $user = User::query()->lockForUpdate()->findOrFail($request->user()->id);
+
+            if ($user->coins_claimed_at?->isToday()) {
+                throw new DisplayException('You have already claimed your daily coins.');
+            }
+
+            $user->forceFill([
+                'coins' => $user->coins + 10,
+                'coins_claimed_at' => now(),
+            ])->save();
+
+            return $user->fresh();
+        });
+
+        return $this->fractal->item($user)
+            ->transformWith($this->getTransformer(AccountTransformer::class))
+            ->toArray();
+    }
+
+    /**
+     * Submit a coin request for an administrator to review.
+     */
+    public function requestCoins(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'amount' => ['required', 'integer', 'min:1', 'max:100'],
+            'reason' => ['required', 'string', 'min:5', 'max:500'],
+        ]);
+
+        DB::transaction(function () use ($request, $data) {
+            // Lock the user row so two simultaneous clicks cannot create two
+            // pending requests for the same account.
+            User::query()->lockForUpdate()->findOrFail($request->user()->id);
+
+            if (CoinRequest::query()
+                ->where('user_id', $request->user()->id)
+                ->where('status', CoinRequest::STATUS_PENDING)
+                ->exists()) {
+                throw new DisplayException('You already have a pending coin request.');
+            }
+
+            CoinRequest::query()->create([
+                'user_id' => $request->user()->id,
+                'amount' => $data['amount'],
+                'reason' => $data['reason'],
+                'status' => CoinRequest::STATUS_PENDING,
+            ]);
+        });
+
+        return new JsonResponse(['message' => 'Your coin request was sent to an administrator.'], 201);
     }
 
     /**
