@@ -1,20 +1,24 @@
 @extends('layouts.admin')
 
 @section('title')
-    New Server
+    {{ ($client ?? false) ? 'Create Your Server' : 'New Server' }}
 @endsection
 
 @section('content-header')
-    <h1>Create Server<small>Add a new server to the panel.</small></h1>
+    <h1>Create Server<small>{{ ($client ?? false) ? 'Use your coin balance to deploy a server.' : 'Add a new server to the panel.' }}</small></h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li><a href="{{ route('admin.servers') }}">Servers</a></li>
+        @if($client ?? false)
+            <li><a href="{{ route('index') }}">Dashboard</a></li>
+        @else
+            <li><a href="{{ route('admin.index') }}">Admin</a></li>
+            <li><a href="{{ route('admin.servers') }}">Servers</a></li>
+        @endif
         <li class="active">Create Server</li>
     </ol>
 @endsection
 
 @section('content')
-<form action="{{ route('admin.servers.new') }}" method="POST">
+<form action="{{ ($client ?? false) ? route('client.servers.store') : route('admin.servers.new') }}" method="POST">
     <div class="row">
         <div class="col-xs-12">
             <div class="box">
@@ -32,8 +36,14 @@
 
                         <div class="form-group">
                             <label for="pUserId">Server Owner</label>
-                            <select id="pUserId" name="owner_id" class="form-control" style="padding-left:0;"></select>
-                            <p class="small text-muted no-margin">Email address of the Server Owner.</p>
+                            @if($client ?? false)
+                                <input type="hidden" name="owner_id" value="{{ $currentUser->id }}">
+                                <input type="text" class="form-control" value="{{ $currentUser->username }} (you)" disabled>
+                                <p class="small text-muted no-margin">Your server will be assigned to your account.</p>
+                            @else
+                                <select id="pUserId" name="owner_id" class="form-control" style="padding-left:0;"></select>
+                                <p class="small text-muted no-margin">Email address of the Server Owner.</p>
+                            @endif
                         </div>
                     </div>
 
@@ -343,14 +353,14 @@
     <script type="application/javascript">
         $(document).ready(function() {
             // Persist 'Server Owner' select2
-            @if (old('owner_id'))
+            @if (!($client ?? false) && old('owner_id'))
                 $.ajax({
                     url: '/admin/users/accounts.json?user_id={{ old('owner_id') }}',
                     dataType: 'json',
                 }).then(function (data) {
                     initUserIdSelect([ data ]);
                 });
-            @else
+            @elseif(!($client ?? false))
                 initUserIdSelect();
             @endif
             // END Persist 'Server Owner' select2
