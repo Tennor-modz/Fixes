@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Api\Client;
 
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\User;
 use Pterodactyl\Models\Permission;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -64,6 +65,21 @@ class ClientController extends ClientApiController
         $servers = $builder->paginate(min($request->query('per_page', 50), 100))->appends($request->query());
 
         return $this->fractal->transformWith($transformer)->collection($servers)->toArray();
+    }
+
+    /**
+     * Return public Nightshift dashboard statistics.
+     */
+    public function stats(): array
+    {
+        return [
+            'object' => 'dashboard_stats',
+            'attributes' => [
+                'servers' => Server::query()->count(),
+                'users' => User::query()->where('root_admin', false)->count(),
+                'admin_users' => User::query()->where('root_admin', true)->count(),
+            ],
+        ];
     }
 
     /**

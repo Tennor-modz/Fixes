@@ -32,6 +32,7 @@ export default () => {
         () => getServers({ page, type: showOnlyAdmin && rootAdmin ? 'admin' : undefined })
     );
     const { data: account } = useSWR('/api/client/account', async () => (await http.get('/api/client/account')).data.data.attributes);
+    const { data: stats } = useSWR('/api/client/stats', async () => (await http.get('/api/client/stats')).data.data.attributes);
 
     useEffect(() => {
         setPage(1);
@@ -77,19 +78,11 @@ export default () => {
                     </div>
                 </div>
             )}
-            <div css={tw`mb-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4`}>
-                <a href="https://github.com" target="_blank" rel="noreferrer" css={tw`rounded-lg border border-pink-500/30 bg-pink-900/30 p-4 transition hover:border-pink-300`}>
-                    <p css={tw`text-sm font-semibold text-pink-100`}>Get help on GitHub</p><p css={tw`mt-1 text-xs text-neutral-400`}>Report issues and read guides.</p>
-                </a>
-                <a href="https://wa.me/254703726139" target="_blank" rel="noreferrer" css={tw`rounded-lg border border-orange-500/30 bg-orange-900/30 p-4 transition hover:border-orange-300`}>
-                    <p css={tw`text-sm font-semibold text-orange-100`}>Chat with owner</p><p css={tw`mt-1 text-xs text-neutral-400`}>WhatsApp the panel owner.</p>
-                </a>
-                <a href="https://wa.me/254703726139?text=I%20would%20like%20to%20buy%20you%20a%20coffee" target="_blank" rel="noreferrer" css={tw`rounded-lg border border-orange-500/30 bg-orange-900/30 p-4 transition hover:border-orange-300`}>
-                    <p css={tw`text-sm font-semibold text-orange-100`}>Buy coffee</p><p css={tw`mt-1 text-xs text-neutral-400`}>Support Nightshift on WhatsApp.</p>
-                </a>
-                <div css={tw`rounded-lg border border-pink-500/30 bg-gray-900 p-4`}>
-                    <p css={tw`text-sm font-semibold text-pink-100`}>Nightshift stats</p><p css={tw`mt-1 text-xs text-neutral-400`}>Servers: {account?.server_count ?? 0} · Users: — · Admin users: —</p>
-                </div>
+            <div css={tw`mb-4 rounded-lg border border-pink-500/30 bg-gray-900 p-4`}>
+                <p css={tw`text-sm font-semibold text-pink-100`}>Nightshift stats</p>
+                <p css={tw`mt-1 text-xs text-neutral-400`}>
+                    {stats ? `Servers: ${stats.servers} · Users: ${stats.users} · Admin users: ${stats.admin_users}` : 'Loading live statistics...'}
+                </p>
             </div>
             {rootAdmin && (
                 <div css={tw`mb-2 flex justify-end items-center`}>

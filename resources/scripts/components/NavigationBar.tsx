@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faCogs, faEllipsisV, faCoins, faGift, faLayerGroup, faServer, faSignOutAlt, faUser } from '@fortawesome/free-solid-svg-icons';
@@ -47,6 +47,7 @@ export default () => {
     const location = useLocation();
     const [showSidebar, setShowSidebar] = useState(false);
     const [showDrexMenu, setShowDrexMenu] = useState(false);
+    const drexMenuRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setShowDrexMenu(false);
@@ -56,6 +57,24 @@ export default () => {
         }
         setShowSidebar(false);
     }, [location.pathname]);
+
+    useEffect(() => {
+        if (!showDrexMenu) return;
+
+        const closeMenu = (event: MouseEvent) => {
+            if (drexMenuRef.current && !drexMenuRef.current.contains(event.target as Node)) setShowDrexMenu(false);
+        };
+        const closeOnEscape = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') setShowDrexMenu(false);
+        };
+
+        document.addEventListener('mousedown', closeMenu);
+        document.addEventListener('keydown', closeOnEscape);
+        return () => {
+            document.removeEventListener('mousedown', closeMenu);
+            document.removeEventListener('keydown', closeOnEscape);
+        };
+    }, [showDrexMenu]);
 
     const onTriggerLogout = () => {
         setIsLoggingOut(true);
@@ -90,7 +109,7 @@ export default () => {
 
                 <RightNavigation className={'flex h-full items-center justify-center'}>
                     <SearchContainer />
-                    <div className={'relative h-full flex items-center'}>
+                    <div ref={drexMenuRef} className={'relative h-full flex items-center'}>
                         <button
                             type={'button'}
                             aria-label={'Open Drex Hosting menu'}
@@ -116,6 +135,15 @@ export default () => {
                                 <NavLink to={'/account'} role={'menuitem'} className={'flex items-center rounded px-3 py-3 text-sm text-pink-100 no-underline hover:bg-pink-950'} onClick={() => setShowDrexMenu(false)}>
                                     <FontAwesomeIcon icon={faUser} className={'mr-3 text-orange-400'} /> Account settings
                                 </NavLink>
+                                <a href={'https://github.com/Tennor-modz/Fixes'} target={'_blank'} rel={'noreferrer'} role={'menuitem'} className={'flex items-center rounded px-3 py-3 text-sm text-pink-100 no-underline hover:bg-pink-950'} onClick={() => setShowDrexMenu(false)}>
+                                    <FontAwesomeIcon icon={faCogs} className={'mr-3 text-orange-400'} /> Get help on GitHub
+                                </a>
+                                <a href={'https://wa.me/254703726139'} target={'_blank'} rel={'noreferrer'} role={'menuitem'} className={'flex items-center rounded px-3 py-3 text-sm text-pink-100 no-underline hover:bg-pink-950'} onClick={() => setShowDrexMenu(false)}>
+                                    <FontAwesomeIcon icon={faUser} className={'mr-3 text-orange-400'} /> Chat with owner
+                                </a>
+                                <a href={'https://wa.me/254703726139?text=I%20would%20like%20to%20buy%20you%20a%20coffee'} target={'_blank'} rel={'noreferrer'} role={'menuitem'} className={'flex items-center rounded px-3 py-3 text-sm text-pink-100 no-underline hover:bg-pink-950'} onClick={() => setShowDrexMenu(false)}>
+                                    <FontAwesomeIcon icon={faGift} className={'mr-3 text-orange-400'} /> Buy coffee
+                                </a>
                                 {rootAdmin && <a href={'/admin'} role={'menuitem'} className={'flex items-center rounded px-3 py-3 text-sm text-pink-100 no-underline hover:bg-pink-950'} onClick={() => setShowDrexMenu(false)}>
                                     <FontAwesomeIcon icon={faCogs} className={'mr-3 text-orange-400'} /> Admin dashboard
                                 </a>}
