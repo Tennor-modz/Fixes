@@ -44,14 +44,20 @@ class CreateServerController extends Controller
 
         $nests = $this->nestRepository->getWithEggs();
 
-        \JavaScript::put([
-            'nodeData' => $this->nodeRepository->getNodesForServerCreation(),
+        $javascript = [
             'nests' => $nests->map(function (Nest $item) {
                 return array_merge($item->toArray(), [
                     'eggs' => $item->eggs->keyBy('id')->toArray(),
                 ]);
             })->keyBy('id'),
-        ]);
+        ];
+
+        // Do not send node/allocation data, including IP addresses, to clients.
+        if (!$request->routeIs('client.servers.new')) {
+            $javascript['nodeData'] = $this->nodeRepository->getNodesForServerCreation();
+        }
+
+        \JavaScript::put($javascript);
 
         return view('admin.servers.new', [
             'locations' => Location::all(),
