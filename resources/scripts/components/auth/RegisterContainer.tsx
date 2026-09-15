@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Formik, FormikHelpers } from 'formik';
 import { object, ref, string } from 'yup';
 import tw from 'twin.macro';
@@ -75,13 +76,12 @@ export default ({ history }: RouteComponentProps) => {
                         <Button type={'submit'} size={'xlarge'} isLoading={isSubmitting} disabled={isSubmitting}>Create Account</Button>
                     </div>
                     <div css={tw`mt-6 text-center`}>
-                        <button
-                            type={'button'}
-                            onClick={() => history.push('/auth/login')}
+                        <Link
+                            to={'/auth/login'}
                             css={tw`text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600`}
                         >
                             Already have an account? Log in
-                        </button>
+                        </Link>
                     </div>
                 </LoginFormContainer>
             )}
