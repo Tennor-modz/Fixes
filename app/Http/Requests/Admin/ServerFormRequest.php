@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Requests\Admin;
 
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Allocation;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
@@ -16,6 +17,34 @@ class ServerFormRequest extends AdminFormRequest
     {
         return !is_null($this->user())
             && ((bool) $this->user()->root_admin || $this->routeIs('client.servers.store'));
+    }
+
+    /**
+     * Select the first available allocation for client-created servers.
+     *
+     * Clients should not be shown node names, allocation IDs, or IP addresses.
+     * The selected allocation is still validated normally below.
+     */
+    protected function prepareForValidation(): void
+    {
+        if (!$this->routeIs('client.servers.store') || !$this->user() || $this->user()->root_admin) {
+            return;
+        }
+
+        $allocation = Allocation::query()
+            ->whereNull('server_id')
+            ->orderBy('id')
+            ->first();
+
+        if (!$allocation) {
+            return;
+        }
+
+        $this->merge([
+            'node_id' => $allocation->node_id,
+            'allocation_id' => $allocation->id,
+            'allocation_additional' => [],
+        ]);
     }
 
     /**
