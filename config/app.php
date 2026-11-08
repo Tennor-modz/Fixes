@@ -10,7 +10,16 @@ return [
     | change this value if you are not maintaining your own internal versions.
     */
 
-    'version' => 'canary',
+    'version' => '1.15.2',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Nightshift Fork Version
+    |--------------------------------------------------------------------------
+    | Version of the Nightshift fork itself. Shown on the admin overview page.
+    */
+
+    'fork-version' => '1.0.0-nightshift',
 
     /*
     |--------------------------------------------------------------------------
